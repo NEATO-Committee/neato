@@ -14,7 +14,7 @@ operating system may point a program's `headsup` at a virtual display of its own
 same from the program's point of view.
 
 `headsup` keeps the NEET Computers API unchanged, including how it reports its own failures, so it does not use the
-codes in [errors.md](../common/errors.md): a mistake raises a plain Lua error, as
+codes in [errors](../common/errors): a mistake raises a plain Lua error, as
 [Drawing](#drawing) describes.
 
 | Name              | Description                                                                                                                                                       | Arguments                              | Returns                   |
@@ -42,7 +42,7 @@ headsup
 
 - Coordinates. Every coordinate is an integer counted from 1, and bounds are inclusive: `x` runs from 1 to the width
   and `y` from 1 to the height returned by `headsup.getSize`, with 1, 1 at the top left corner, as in the
-  [terminal](core/term.md).
+  [terminal](core/term).
 
 - The buffer and the display. Every drawing call acts on an off-screen buffer that belongs to this program, not on the
   display itself. `headsup.draw` publishes: the display is replaced, in one atomic step, with the buffer as it stands
@@ -87,14 +87,14 @@ clear, redraw and publish, but which published picture is on the display at any 
 operating system. A program can hold a stable picture across other programs' draws only where the operating system
 promises it, such as under sole ownership.
 
-This is the same spirit as [ext.screen](screen.md), where an operating system may direct drawing into a window or onto
+This is the same spirit as [ext.screen](screen), where an operating system may direct drawing into a window or onto
 a layer of its own as long as the functions behave the same from the program's point of view: a multiplexed heads-up
 display is such a layer, one bit deep.
 
 Granting the display to one program at a time is a special case of the same rules. An operating system that does this
 reports `ext.headsup` only to the program that owns the display; to every other program the extension must not appear
 to be half there, with no `headsup` global and `sys.hasExtension("ext.headsup")` returning `false`, as the
-[main README](../README.md) requires.
+[main README](../README) requires.
 
 ---
 

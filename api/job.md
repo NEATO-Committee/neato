@@ -9,9 +9,9 @@ Requires: `core`, `ext.proc`
 ---
 
 A NEATO compliant operating system that reports this extension must provide a global `job` API for grouping programs
-into jobs and for choosing which job uses the terminal. [`ext.proc`](proc.md) ends by naming this extension as the
+into jobs and for choosing which job uses the terminal. [`ext.proc`](proc) ends by naming this extension as the
 one its footnote waits for. A shell can already run a pipeline and wait for it, but which program receives keys and
-the terminate event is, without [`ext.job`](job.md), the operating system's undisclosed decision. This extension adds
+the terminate event is, without [`ext.job`](job), the operating system's undisclosed decision. This extension adds
 the group a pipeline runs as, the answer to who gets the terminal, and a way to end a group as one.
 
 A job is a group of processes. Every process belongs to exactly one job at any moment, from the moment it starts to
@@ -58,7 +58,7 @@ contains only itself.
 it was in. A process is a member of exactly one job at a time, and a child may be moved between jobs freely while it
 runs; joining it into the job it is already in succeeds and changes nothing. Two rules bound who may join:
 
-- `pid` must name a running child of the calling program. This is the same privilege [`proc.kill`](proc.md) rests
+- `pid` must name a running child of the calling program. This is the same privilege [`proc.kill`](proc) rests
   on: a program may always stop its own children, so a program may always rearrange its own children. Joining the
   caller itself, or anyone else's process, fails with `EACCES`.
 - The calling program must own `jid`.
@@ -76,12 +76,12 @@ At most one job at a time is the foreground job. Every other job is a background
 input goes while no job is foreground, is up to the operating system.
 
 The rule of this extension: only the programs of the foreground job receive the input events
-[event.md](core/event.md) defines, which are `key`, `key_up` and `char`; this is the choice
-[event.md](core/event.md) leaves to the operating system, made definable by shrinking the pool to one job. Which of
-the foreground job's programs receives each event is still up to the operating system, as [event.md](core/event.md)
-allows among programs. This is the decision [`term.readLine`](core/term.md) points at where it says a line is typed
+[event](core/event) defines, which are `key`, `key_up` and `char`; this is the choice
+[event](core/event) leaves to the operating system, made definable by shrinking the pool to one job. Which of
+the foreground job's programs receives each event is still up to the operating system, as [event](core/event)
+allows among programs. This is the decision [`term.readLine`](core/term) points at where it says a line is typed
 into "the foreground job where the operating system supports job control", and the same rule governs what
-[`stdio.readLine`](stdio.md) reads from a terminal.
+[`stdio.readLine`](stdio) reads from a terminal.
 
 A background job keeps running: nothing about being background slows it down, and nothing restricts what it may
 write to the terminal. It receives no typed input, so a background program reading a terminal keeps waiting, as any
@@ -100,7 +100,7 @@ Two things the rule does not touch:
 `job.setBackground(jid)` takes the designation away when `jid` holds it, leaving no job foreground until one is set
 again; on a job that does not hold it, it succeeds and changes nothing. When the foreground job's last member
 finishes, the job is gone and with it the designation: `job.getForeground()` answers `nil` until some job is set
-again. `nil` is an ordinary answer here, not a failure, as [errors.md](../common/errors.md) defines for such
+again. `nil` is an ordinary answer here, not a failure, as [errors](../common/errors) defines for such
 answers.
 
 A program may set or clear the designation of a job it owns or of a job it belongs to. Whether any other program may
@@ -110,21 +110,21 @@ is up to the operating system; anything it does not allow fails with `EACCES`.
 
 ### Stopping a job
 
-`job.kill(jid, how)` stops every member of the job, and `how` means what it means for [`proc.kill`](proc.md):
+`job.kill(jid, how)` stops every member of the job, and `how` means what it means for [`proc.kill`](proc):
 
 | `how`    | Meaning                                                                                                                                                                                                      |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `"term"` | The default. Every member receives the `terminate` event, exactly as [`proc.kill`](proc.md) delivers it to one program, and is expected to exit. A member that keeps running for too long may then be ended by the operating system. |
+| `"term"` | The default. Every member receives the `terminate` event, exactly as [`proc.kill`](proc) delivers it to one program, and is expected to exit. A member that keeps running for too long may then be ended by the operating system. |
 | `"kill"` | Ends every member now. They receive no event and cannot clean up.                                                                                                                                            |
 
 A member ended this way, without exiting on its own, reports a nonzero status of at least 128, as
-[proc.md](proc.md) defines, and its owner may [`proc.wait`](proc.md) for it as for any child. A member that exits
+[proc](proc) defines, and its owner may [`proc.wait`](proc) for it as for any child. A member that exits
 stops being a member, so the job shrinks as its programs go down and is gone when the last one has.
 
 Only the owner may kill a job, and it needs no permission it does not already have: every member is its child, and
-[proc.md](proc.md) lets a program stop its own children, so the owner could do with [`proc.kill`](proc.md) alone
+[proc](proc) lets a program stop its own children, so the owner could do with [`proc.kill`](proc) alone
 what `job.kill` does to all of them at once. An operating system may let anyone else do it, typically a matter of
-being an administrator (see [`ext.user`](user.md)); anything else fails with `EACCES`.
+being an administrator (see [`ext.user`](user)); anything else fails with `EACCES`.
 
 ---
 

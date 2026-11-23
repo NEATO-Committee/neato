@@ -11,7 +11,7 @@ Requires: `core`
 A NEATO compliant operating system that reports this extension must provide a global `system` API with the few
 facts about the computer itself that programs such as `hostname`, `uname` and `uptime` are written from. The
 operating system's name and version are already covered by [`sys.getOSName` and
-`sys.getOSVersion`](core/sys.md); this extension covers the computer those programs run on.
+`sys.getOSVersion`](core/sys); this extension covers the computer those programs run on.
 
 | Name               | Description                                                                                           | Arguments         | Returns                        |
 | ------------------ | ----------------------------------------------------------------------------------------------------- | ----------------- | ------------------------------ |
@@ -24,7 +24,7 @@ The hostname names this computer on a network of computers. It is a non-empty st
 runs, and a program that wants to know it again must ask again.
 
 `system.setHostname` takes a non-empty string. An operating system may refuse the change, typically unless the
-program's user is an administrator (see [`ext.user`](user.md)), which fails with `EACCES`; an empty name fails with
+program's user is an administrator (see [`ext.user`](user)), which fails with `EACCES`; an empty name fails with
 `EINVAL` and a name the operating system will not store, such as one that is too long, fails with `ELIMIT`.
 
 `system.machine` is for the kind of "hardware" the operating system runs on, in the sense of `uname -m`: a short
@@ -32,7 +32,7 @@ lowercase name such as `"neet"`. Many NEET Computers are the same kind of machin
 name answers `nil`, which is an ordinary answer and not a failure.
 
 `system.uptime` counts from the moment the operating system started. It uses the same kind of clock as
-[`time.monotonic`](time.md): it never counts backwards. It is the one number here that is a measurement and not a
+[`time.monotonic`](time): it never counts backwards. It is the one number here that is a measurement and not a
 name, so it may have a fractional part.
 
 ---

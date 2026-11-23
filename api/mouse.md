@@ -8,16 +8,16 @@ Requires: `core`
 
 ---
 
-This extension defines the mouse pointer events of a graphics screen as [events](core/event.md) of `core`. On real
+This extension defines the mouse pointer events of a graphics screen as [events](core/event) of `core`. On real
 NEET Computers hardware, a graphics screen fires these events to the computer it belongs to while the user works the
 cursor over it; `ext.mouse` gives those events their names in NEATO's event namespace and states exactly when each
 one fires, so a program can rely on them on every operating system that reports the extension. The names and the
-values are the ones NEET Computers uses, unchanged, in the same way [ext.screen](screen.md) keeps the `screen` API
+values are the ones NEET Computers uses, unchanged, in the same way [ext.screen](screen) keeps the `screen` API
 itself unchanged. NEATO does not expose the raw NEET Computers `event` API, so without this extension these events
 have no defined names and an operating system must not deliver them.
 
 Which program receives mouse events, and which screen they come from when a machine has more than one, is up to the
-operating system, exactly as [core/event.md](core/event.md) says for input events. Usually they go to the program
+operating system, exactly as [core/event](core/event) says for input events. Usually they go to the program
 that has focus. A program the events are not delivered to receives none.
 
 ---
@@ -37,10 +37,10 @@ that has focus. A program the events are not delivered to receives none.
 ### Coordinates
 
 In `mouseMoved`, `mouseClicked`, `mouseDragged`, `mouseReleased` and `mouseScrolled`, `x` and `y` are graphics
-coordinates, in the same space the `screen` API of [ext.screen](screen.md) draws in when both extensions are
+coordinates, in the same space the `screen` API of [ext.screen](screen) draws in when both extensions are
 reported. One unit is one pixel, `(0, 0)` is the top left, and on a screen of size `(width, height)` from
 `screen.getSize` the coordinates run from `0` to `width - 1` and from `0` to `height - 1`. A coordinate is never
-negative. An operating system that redirects drawing, as [ext.screen](screen.md) allows it to, reports the events in
+negative. An operating system that redirects drawing, as [ext.screen](screen) allows it to, reports the events in
 the redirected space too, so the positions a program is given are the positions it draws at.
 
 Every mouse event is delivered only while the cursor is on the screen. While it is not, no mouse event is delivered,

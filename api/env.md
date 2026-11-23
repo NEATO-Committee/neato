@@ -14,7 +14,7 @@ that a user or a parent program wants to hand down without editing a file lives 
 preferred editor.
 
 A program starts with a copy of the environment of the program that started it (see
-[`ext.proc`](proc.md#starting-a-program) for the one exception). Changing the environment changes only this
+[`ext.proc`](proc#starting-a-program) for the one exception). Changing the environment changes only this
 program's own copy, never the parent's.
 
 | Name    | Description                                                                            | Arguments                      | Returns                           |
@@ -42,8 +42,8 @@ is asked to run a program by its bare name. Because `:` appears inside full NEAT
 env.set("PATH", "0:system:/bin/;0:system:/usr/bin/")
 ```
 
-An entry may be any path in the [paths](../common/paths.md) format, full or relative, and should name a directory
-and end in `/`. [`ext.proc`](proc.md) uses this exact convention when it resolves a bare name.
+An entry may be any path in the [paths](../common/paths) format, full or relative, and should name a directory
+and end in `/`. [`ext.proc`](proc) uses this exact convention when it resolves a bare name.
 
 ---
 

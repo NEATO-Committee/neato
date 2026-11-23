@@ -14,8 +14,8 @@ runs a pipeline by starting each step connected to the next one, `xargs` starts 
 and a wrapper such as `nice` or `timeout` is just a program that starts another one.
 
 Every program that this API starts is an ordinary NEATO program: a Lua chunk launched exactly as
-[globals.md](globals.md#the-program) describes, with the program model of `core`, the streams of
-[`ext.stdio`](stdio.md) and the environment of [`ext.env`](env.md). There is no second kind of program.
+[globals](globals#the-program) describes, with the program model of `core`, the streams of
+[`ext.stdio`](stdio) and the environment of [`ext.env`](env). There is no second kind of program.
 
 | Name         | Description                                                                                       | Arguments                                   | Returns                                                   |
 | ------------ | ------------------------------------------------------------------------------------------------- | ------------------------------------------- | --------------------------------------------------------- |
@@ -40,11 +40,11 @@ finished child, until a parent waits for it; the parent does not have to.
 started, not when the child finishes; the two programs then run at the same time.
 
 `path` says what to start. If it contains `/` or `:` it is a path to the program file, in the
-[paths](../common/paths.md) format, relative or full. Otherwise it is a bare name, such as `"grep"`, and the
+[paths](../common/paths) format, relative or full. Otherwise it is a bare name, such as `"grep"`, and the
 operating system looks for a file of that name in each directory of the `PATH` variable, in order, using the
-convention [env.md](env.md) defines. Nothing found is `ENOENT`.
+convention [env](env) defines. Nothing found is `ENOENT`.
 
-The child receives `args` as its arguments, through `...`, exactly as [globals.md](globals.md#the-program)
+The child receives `args` as its arguments, through `...`, exactly as [globals](globals#the-program)
 defines. `args` is `nil` or a table; each element must be a string, or a number, which is converted to a string;
 anything else raises an error. An argument list that is too long for the operating system fails with `ELIMIT`.
 
@@ -53,7 +53,7 @@ ignored; an operating system may accept additional fields of its own under names
 
 | Field    | Type   | Meaning                                                                                                                                   |
 | -------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| `cwd`    | string | The child's [`CWD`](core/cwd.md). It must be an existing directory when the child starts. The default is this program's `CWD`.            |
+| `cwd`    | string | The child's [`CWD`](core/cwd). It must be an existing directory when the child starts. The default is this program's `CWD`.            |
 | `env`    | table  | The child's environment, from name to value. It replaces the inherited one entirely. The default is a copy of this program's environment. |
 | `stdin`  | handle | The child's standard input. Must be open for reading. The default is this program's standard input.                                       |
 | `stdout` | handle | The child's standard output. Must be open for writing. The default is this program's standard output.                                     |
@@ -68,7 +68,7 @@ streams it was given, and this program keeps all of its own. A program that hand
 close its own copy of it.
 
 The program file must be something the operating system can load and run as a NEATO program. When
-[`ext.perms`](perms.md) is reported, its permission bits must allow execution. The child's process limit may refuse
+[`ext.perms`](perms) is reported, its permission bits must allow execution. The child's process limit may refuse
 the spawn with `ELIMIT`.
 
 ---
@@ -76,7 +76,7 @@ the spawn with `ELIMIT`.
 ### Pipes
 
 `proc.pipe()` returns two handles that are connected to each other: everything written to the second can be read
-from the first. They are streams like the ones [`ext.stdio`](stdio.md) describes, and they are what connects the
+from the first. They are streams like the ones [`ext.stdio`](stdio) describes, and they are what connects the
 standard output of one program to the standard input of the next.
 
 Writing to a pipe whose reader still exists copies the data into the pipe, and waits while the pipe is full. When
@@ -93,9 +93,9 @@ the same parent, which is how a pipeline is built.
 ### Waiting
 
 `proc.wait` blocks until one of this program's children has finished, and then returns that child's pid and its
-exit status as defined by [globals.md](globals.md#the-program). With no pid, any finished child is returned; with a
+exit status as defined by [globals](globals#the-program). With no pid, any finished child is returned; with a
 pid, that child is. Events that arrive while waiting stay in the event queue, as with
-[`sys.sleep`](core/sys.md).
+[`sys.sleep`](core/sys).
 
 `proc.poll` does the same without waiting: it returns the pid and status of a finished child, or `nil` when every
 child is still running. `nil` with no code is an ordinary answer, not a failure.
@@ -123,7 +123,7 @@ operating system. A program may stop itself: `"kill"` on its own pid ends it, an
 same as receiving the terminate event.
 
 A program may always stop its own children. Who else it may stop, if anyone, is up to the operating system, and is
-typically a matter of being an administrator (see [`ext.user`](user.md)); anything it may not stop fails with
+typically a matter of being an administrator (see [`ext.user`](user)); anything it may not stop fails with
 `EACCES`. A pid that names no program fails with `ESRCH`.
 
 ---
@@ -190,5 +190,5 @@ end
 
 On process groups, sessions and job control: a shell can run a pipeline and wait for it with this extension alone,
 and the operating system decides which program receives keys and the terminate event, as
-[event.md](core/event.md) allows. [`ext.job`](job.md) is the future extension this leaves room for. Jobs, the
+[event](core/event) allows. [`ext.job`](job) is the future extension this leaves room for. Jobs, the
 foreground job and terminal input, stopping a job as one. Sessions are still defined by no extension.

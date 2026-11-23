@@ -12,7 +12,7 @@ NEET Computers can run a compatibility layer for ComputerCraft: peripherals and 
 ComputerCraft are attached to a NEET computer through a wrapper, and the wrapper queues the events that equipment
 generates to the computer unchanged, under ComputerCraft's own event names. This extension defines what those events
 are called in NEATO and what an operating system that runs the compatibility layer must deliver, so a program can
-wait for them through the [event](core/event.md) API of `core` like any other event. Which program a compat event is
+wait for them through the [event](core/event) API of `core` like any other event. Which program a compat event is
 delivered to is up to the operating system, as everywhere in `core`.
 
 Compat events exist only while the operating system runs the compatibility layer. An OS that does not report
@@ -52,7 +52,7 @@ physical keystrokes, but they carry ComputerCraft's values, key numbers where `c
 both kinds would hand a program the same keystroke twice in two shapes.
 
 An operating system chooses, per keystroke, which shape it delivers. It may deliver the keystroke as the standard
-event of `core`, translated from ComputerCraft's values into what [core/event.md](core/event.md) defines, or deliver
+event of `core`, translated from ComputerCraft's values into what [core/event](core/event) defines, or deliver
 it as `compat_key`, `compat_char` and so on under the naming rule above, but it must not deliver both to the same
 program. Everything the compatibility layer produces that `core` does not define an input event for is always passed
 through under the naming rule.

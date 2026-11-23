@@ -10,11 +10,11 @@ Requires: `core`
 
 A NEATO compliant operating system that reports this extension must provide the global `partitions` table with the
 same functions, parameters and return types as the NEET Computers API. In stock NEET Computers these functions live in
-the global `files`, mixed in with the file functions; NEATO's [`fs`](core/fs.md) deliberately does not carry them, and
+the global `files`, mixed in with the file functions; NEATO's [`fs`](core/fs) deliberately does not carry them, and
 this extension gives them a global of their own. The name is of the hardware, not of paths: its functions take disk
 slots and partition names, which is machine-level work, and `fs` is a view an operating system builds on top of what
 they manage. The one kind of path its functions take, the boot entrypoint, is a NEET path on the disk named by the
-`disk` parameter, not a NEATO [path](../common/paths.md); [Boot selection](#boot-selection) describes its exact form.
+`disk` parameter, not a NEATO [path](../common/paths); [Boot selection](#boot-selection) describes its exact form.
 
 `partitions` keeps the NEET Computers API unchanged, including how it reports its own failures. A failure is a Lua
 error with a plain string message, and there is nothing for an operating system to redirect. The two things an
@@ -25,19 +25,19 @@ operating system may do about the raw API, hiding whole disks and blocking its d
 A NEET Computers machine stores its files on disks. Every machine has exactly one of its own, the disk it came with,
 in slot 0; more can be attached to it from outside, and each of those takes the next free slot number. A disk is
 identified by its slot number, which can change as disks come and go, and by an ID, a string that stays the same for
-as long as the disk exists - the same two notions the [paths](../common/paths.md) format writes as the first
+as long as the disk exists - the same two notions the [paths](../common/paths) format writes as the first
 component of a full path.
 
 A partition is a named sub-tree of a disk: paths on the disk start with the partition's name, and everything below
 that name belongs to the partition. A partition carries two flags. `readonly` marks its contents as not to be
 written: the hardware honors at least this much, refusing to delete a read-only partition, and an operating system
-that mounts a read-only partition must present it read-only, the `EROFS` of [fs](core/fs.md). `hidden` constrains
+that mounts a read-only partition must present it read-only, the `EROFS` of [fs](core/fs). `hidden` constrains
 nothing in the hardware itself: the disk keeps the flag, reports it through `partitions.getPartition`, and lists
 hidden partitions to this API like any other. Whoever presents the partition to a program is who honors it - in
 stock NEET Computers that is the shell, which displays the flag; in a NEATO environment it is the operating system,
 and a partition it hides is one it does not mount.
 
-NEATO's [fs](core/fs.md) presents one merged tree and has none of this machinery. It answers which disks and
+NEATO's [fs](core/fs) presents one merged tree and has none of this machinery. It answers which disks and
 partitions exist, in NEATO form (`fs.getDisks`, `fs.getPartitions`), but creating, deleting and hiding partitions,
 ejecting a disk and choosing what the machine runs when it is switched on are hardware operations, and an operating
 system mounts from them whatever it decides a program may see. This extension is that hardware view.
@@ -92,7 +92,7 @@ failure. Names are matched without regard to case. The table has three fields:
 
 ### Failures
 
-`partitions` keeps the NEET Computers failure convention and does not use the codes in [errors.md](../common/errors.md).
+`partitions` keeps the NEET Computers failure convention and does not use the codes in [errors](../common/errors).
 A failure is a plain Lua error carrying one of these messages, exactly as NEET Computers raises it:
 
 | Message                                       | Raised when                                                                                |
@@ -122,10 +122,10 @@ whatever boot selection it has.
 
 The path `partitions.getBootPath` answers, and `partitions.setBoot` accepts, is the disk's own entrypoint path in
 NEET's normalized form, backslashes and all; it is passed through, not converted into the NEATO
-[paths](../common/paths.md) format.
+[paths](../common/paths) format.
 
 This is the hardware's power-on selection, not the NEATO bootloader's: a NEATO bootloader is configured through
-`boot.lua` instead (see [boot/README.md](../boot/README.md)).
+`boot.lua` instead (see [boot/README](../boot/README)).
 
 ---
 
@@ -139,15 +139,15 @@ specification expects an operating system to keep programs from doing that to ea
 means to.
 
 An operating system MAY block any of the six, for every program or only for some, for example unless the program's
-user is an administrator (see [ext.user](user.md)), or always. Which programs may call these functions, and why a
+user is an administrator (see [ext.user](user)), or always. Which programs may call these functions, and why a
 call was blocked, is entirely the operating system's policy and is not defined here.
 
 A blocked call must have no effect: no partition is created, changed or deleted, no disk is ejected, no boot
 selection changes. A blocked call raises a Lua error, carrying a plain string message the operating system chooses;
 a program that is allowed the call gets exactly the NEET Computers behavior.
 
-The error, rather than the nil, code and message convention of [errors.md](../common/errors.md), is because
-`partitions` is a raw passthrough extension like [ext.chip](chip.md) and keeps NEET's own failure reporting, which
+The error, rather than the nil, code and message convention of [errors](../common/errors), is because
+`partitions` is a raw passthrough extension like [ext.chip](chip) and keeps NEET's own failure reporting, which
 is errors with plain string messages.
 
 The other functions must always work when this extension is reported. `partitions.getPartitions`,
@@ -164,7 +164,7 @@ and it does not withhold `ext.partitions` over the calls it blocks.
 ### Seeing disks
 
 In NEET Computers, every program sees every attached disk and may call the whole API. An operating system that
-reports `ext.partitions` MAY instead hide disks from a program, the way [ext.peripherals](peripherals.md) may hide
+reports `ext.partitions` MAY instead hide disks from a program, the way [ext.peripherals](peripherals) may hide
 peripherals. A disk that is hidden from a program must be indistinguishable from one that is not attached: it does
 not appear in the results of `partitions.getDisks`, it is not counted by `partitions.getNumberOfDisks`, and every
 function that takes its slot number fails on it with `Disk not found`, the same answer an unknown number gets. This
@@ -174,7 +174,7 @@ a disk it may ask things of, and one it cannot find is not for it.
 
 The two models divide the work. Visibility is for keeping a program away from a disk entirely; blocking is for a
 program that may see a disk and use it, but not rearrange it. For partitions there is no third model: which
-partitions of a visible disk a program reaches is decided by the operating system's [fs](core/fs.md) view - it
+partitions of a visible disk a program reaches is decided by the operating system's [fs](core/fs) view - it
 mounts what it wants the program to have and leaves the rest out - and `hidden`, the flag the disk itself carries,
 is one input to that decision, not a rule of this specification.
 

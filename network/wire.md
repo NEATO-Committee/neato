@@ -1,7 +1,7 @@
 # NEATO Network Wire Format Specification
 
-Extension: none. These are shared definitions that [`ext.rpp`](rpp.md) and [`ext.sppRemote`](spp-remote.md) are
-written against, and that [`ext.dpp`](dpp.md) needs to be revised to use.
+Extension: none. These are shared definitions that [`ext.rpp`](rpp) and [`ext.sppRemote`](spp-remote) are
+written against, and that [`ext.dpp`](dpp) needs to be revised to use.
 
 Version: 1
 
@@ -9,7 +9,7 @@ Version: 1
 
 Every protocol in NEATO Network that crosses between computers eventually has to hand a list of values to the one
 thing NEET Computers gives programs for that: `io.broadcastLocal(...)` or the `broadcast(...)` function of an Access
-Point (see [Media](spp-remote.md#media)). Those functions are strict about what they take and lossy in what they give
+Point (see [Media](spp-remote#media)). Those functions are strict about what they take and lossy in what they give
 back. This file states exactly what survives, so that no protocol has to rediscover it, and defines the one encoding
 that the protocols use to put richer values into a frame.
 
@@ -39,7 +39,7 @@ must follow all of these rules. A receiver drops a frame that breaks one, withou
 
 The sender checks these rules too. A frame that breaks them is not sent, and the call that wanted to send it fails with
 `EINVAL` (or `EMSGSIZE`, if only a size rule is broken). These are the shared NEATO codes of
-[errors.md](../common/errors.md).
+[errors](../common/errors).
 
 ---
 
@@ -66,7 +66,7 @@ Raw encoding
 A payload is invalid, and `send` fails with `EINVAL`, if it nests tables deeper than 32 levels, if it contains itself,
 if it holds a function, thread or userdata, or if any key or value is `nan`. Metatables are not sent. The receiver builds
 plain tables. A table that is referred to twice is sent twice, as two separate copies, which is the same behaviour that
-[local SPP](spp.md#messages) has for copies.
+[local SPP](spp#messages) has for copies.
 
 The size limit of a payload is a limit on the raw encoding: 3072 bytes, which after Base64 is 4096 characters, the
 longest string a frame may hold. A payload that is larger fails with `EMSGSIZE`. Protocols that need to send more than that

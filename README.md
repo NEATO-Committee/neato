@@ -40,11 +40,11 @@ There are three kinds of name:
 | `ext.<name>`        | A standard extension, defined by a specification in this repository. Example: `ext.screen`. |
 | `x.<vendor>.<name>` | A non-standard extension defined by an OS or a third party. Example: `x.neetos.windows`.    |
 
-For contributions regarding non-standard extensions, you can check out the [vendor/README.md](vendor/README.md) file for more information.
+For contributions regarding non-standard extensions, you can check out the [vendor/README](vendor/README) file for more information.
 
 Names are case sensitive and every segment consists only of letters and digits.
 
-Querying. A program finds out what it is running on with the `sys` API (see [sys.md](api/core/sys.md)):
+Querying. A program finds out what it is running on with the `sys` API (see [sys](api/core/sys)):
 
 ```lua
 if sys.hasExtension("ext.screen", 1) then
@@ -75,28 +75,28 @@ keeps the names free until a specification is written and final.
 
 | Name         | Version | Requires | Specification                                                                                   | Contents                                                                                 |
 | ------------ | ------- | -------- | ----------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| `core`       | 4       |          | [api/](api/README.md), [common/paths.md](common/paths.md), [common/errors.md](common/errors.md) | Lua environment, the program model (arguments and exit status), `sys`, `event`, `term` (including line input), `fs`, `print`, `CWD`, paths, error codes |
-| `ext.stdio`  | 1       | `core`   | [api/stdio.md](api/stdio.md)                                                                    | The standard input, output and error streams, line input, and what `print` writes to.    |
-| `ext.env`    | 1       | `core`   | [api/env.md](api/env.md)                                                                        | The environment variables of a program, and the `PATH` convention.                       |
-| `ext.time`   | 1       | `core`   | [api/time.md](api/time.md)                                                                      | A monotonic clock, a wall clock, and UTC calendar tables.                                |
-| `ext.proc`   | 1       | `core`, `ext.stdio`, `ext.env` | [api/proc.md](api/proc.md)                                                | Processes: starting, waiting for and stopping programs, and pipes.                       |
-| `ext.job`    | 1       | `core`, `ext.proc` | [api/job.md](api/job.md)                                              | Process groups and job control: jobs, the foreground job and terminal input, stopping a job as one. |
-| `ext.user`   | 1       | `core`   | [api/user.md](api/user.md)                                                                      | User accounts: identity, lookup, administrators.                                         |
-| `ext.auth`   | 1       | `core`, `ext.user` | [api/auth.md](api/auth.md)                                            | Verifying a password and switching which user a program runs as.                         |
-| `ext.system` | 1       | `core`   | [api/system.md](api/system.md)                                                                  | Hostname, machine type, uptime.                                                          |
-| `ext.perms`  | 1       | `core`   | [api/perms.md](api/perms.md)                                                                    | Unix-style permission bits and owners for the `fs` filesystem.                           |
-| `ext.screen` | 1       | `core`   | [api/screen.md](api/screen.md)                                                                  | NEET Computers `screen` API, possibly redirected to a window or layer.                   |
-| `ext.headsup` | 1      | `core`   | [api/headsup.md](api/headsup.md)                                                                | NEET Computers `headsup` API, possibly multiplexed across programs.                      |
-| `ext.peripherals` | 1 | `core`   | [api/peripherals.md](api/peripherals.md)                                                        | NEET Computers `io` API, possibly restricted by the operating system.                    |
-| `ext.partitions` | 1  | `core`   | [api/partitions.md](api/partitions.md)                                                          | NEET Computers disk and partition hardware: partitions and their flags, disks, and boot selection, with rules for blocking destructive calls and hiding disks. |
-| `ext.chip`   | 1       | `core`   | [api/chip.md](api/chip.md)                                                                      | The NEET Computers `chip` API passed through, with rules for blocking `shutdown`, `reboot` and `crash`. |
-| `ext.internet` | 1     | `core`   | [api/internet.md](api/internet.md)                                                              | The NEET Computers `internet` API passed through: HTTP and WebSocket, answered through events. |
-| `ext.mouse`  | 1       | `core`   | [api/mouse.md](api/mouse.md)                                                                    | Mouse pointer events of a graphics screen: move, click, drag, release and scroll.        |
-| `ext.compat` | 1       | `core`   | [api/compat.md](api/compat.md)                                                                  | Compatibility events: ComputerCraft events passed through under `compat_` names.         |
-| `ext.fifo`   | 1       | `core`   | [api/fifo.md](api/fifo.md)                                                                      | Named pipes in the `fs` filesystem: `fs.mkfifo` and the pipe semantics of opening one.   |
-| `ext.utimes` | 1       | `core`   | [api/utimes.md](api/utimes.md)                                                                  | Setting the modification time `fs.stat` reports.                                         |
-| `ext.dpp`    | 3       | `core`   | [network/dpp.md](network/dpp.md)                                                                | Direct Payload Protocol.                                                                 |
-| `ext.spp`    | 2       | `core`   | [network/spp.md](network/spp.md)                                                                | Sequenced Payload Protocol: reliable local connections, pollable handles, peer identity. |
+| `core`       | 4       |          | [api/](api/README), [common/paths](common/paths), [common/errors](common/errors) | Lua environment, the program model (arguments and exit status), `sys`, `event`, `term` (including line input), `fs`, `print`, `CWD`, paths, error codes |
+| `ext.stdio`  | 1       | `core`   | [api/stdio](api/stdio)                                                                    | The standard input, output and error streams, line input, and what `print` writes to.    |
+| `ext.env`    | 1       | `core`   | [api/env](api/env)                                                                        | The environment variables of a program, and the `PATH` convention.                       |
+| `ext.time`   | 1       | `core`   | [api/time](api/time)                                                                      | A monotonic clock, a wall clock, and UTC calendar tables.                                |
+| `ext.proc`   | 1       | `core`, `ext.stdio`, `ext.env` | [api/proc](api/proc)                                                | Processes: starting, waiting for and stopping programs, and pipes.                       |
+| `ext.job`    | 1       | `core`, `ext.proc` | [api/job](api/job)                                              | Process groups and job control: jobs, the foreground job and terminal input, stopping a job as one. |
+| `ext.user`   | 1       | `core`   | [api/user](api/user)                                                                      | User accounts: identity, lookup, administrators.                                         |
+| `ext.auth`   | 1       | `core`, `ext.user` | [api/auth](api/auth)                                            | Verifying a password and switching which user a program runs as.                         |
+| `ext.system` | 1       | `core`   | [api/system](api/system)                                                                  | Hostname, machine type, uptime.                                                          |
+| `ext.perms`  | 1       | `core`   | [api/perms](api/perms)                                                                    | Unix-style permission bits and owners for the `fs` filesystem.                           |
+| `ext.screen` | 1       | `core`   | [api/screen](api/screen)                                                                  | NEET Computers `screen` API, possibly redirected to a window or layer.                   |
+| `ext.headsup` | 1      | `core`   | [api/headsup](api/headsup)                                                                | NEET Computers `headsup` API, possibly multiplexed across programs.                      |
+| `ext.peripherals` | 1 | `core`   | [api/peripherals](api/peripherals)                                                        | NEET Computers `io` API, possibly restricted by the operating system.                    |
+| `ext.partitions` | 1  | `core`   | [api/partitions](api/partitions)                                                          | NEET Computers disk and partition hardware: partitions and their flags, disks, and boot selection, with rules for blocking destructive calls and hiding disks. |
+| `ext.chip`   | 1       | `core`   | [api/chip](api/chip)                                                                      | The NEET Computers `chip` API passed through, with rules for blocking `shutdown`, `reboot` and `crash`. |
+| `ext.internet` | 1     | `core`   | [api/internet](api/internet)                                                              | The NEET Computers `internet` API passed through: HTTP and WebSocket, answered through events. |
+| `ext.mouse`  | 1       | `core`   | [api/mouse](api/mouse)                                                                    | Mouse pointer events of a graphics screen: move, click, drag, release and scroll.        |
+| `ext.compat` | 1       | `core`   | [api/compat](api/compat)                                                                  | Compatibility events: ComputerCraft events passed through under `compat_` names.         |
+| `ext.fifo`   | 1       | `core`   | [api/fifo](api/fifo)                                                                      | Named pipes in the `fs` filesystem: `fs.mkfifo` and the pipe semantics of opening one.   |
+| `ext.utimes` | 1       | `core`   | [api/utimes](api/utimes)                                                                  | Setting the modification time `fs.stat` reports.                                         |
+| `ext.dpp`    | 3       | `core`   | [network/dpp](network/dpp)                                                                | Direct Payload Protocol.                                                                 |
+| `ext.spp`    | 2       | `core`   | [network/spp](network/spp)                                                                | Sequenced Payload Protocol: reliable local connections, pollable handles, peer identity. |
 
 An operating system that wants to run a Unix-style userland, a shell and the classic core utilities, reports `core`
 with `ext.stdio`, `ext.env`, `ext.time`, `ext.proc`, `ext.user`, `ext.system` and `ext.perms`. Together they are the
@@ -111,10 +111,10 @@ the same way as the names below.
 
 | Name            | Version | Requires  | Specification                                  | Contents                                                              |
 | --------------- | ------- | --------- | ---------------------------------------------- | --------------------------------------------------------------------- |
-| `ext.rpp`       | 1       | `core`    | [network/rpp.md](network/rpp.md)               | Routed Packet Protocol: host addresses and routing between computers. |
-| `ext.sppRemote` | 1       | `ext.spp` | [network/spp-remote.md](network/spp-remote.md) | SPP connections between computers (`scope = "network"`).              |
-| `ext.symlink`   | 1       | `core`    | [api/symlink.md](api/symlink.md)               | Symbolic links in the `fs` filesystem.                                |
-| `ext.statfs`    | 1       | `core`    | [api/statfs.md](api/statfs.md)                 | Size and free space of a filesystem.                                  |
+| `ext.rpp`       | 1       | `core`    | [network/rpp](network/rpp)               | Routed Packet Protocol: host addresses and routing between computers. |
+| `ext.sppRemote` | 1       | `ext.spp` | [network/spp-remote](network/spp-remote) | SPP connections between computers (`scope = "network"`).              |
+| `ext.symlink`   | 1       | `core`    | [api/symlink](api/symlink)               | Symbolic links in the `fs` filesystem.                                |
+| `ext.statfs`    | 1       | `core`    | [api/statfs](api/statfs)                 | Size and free space of a filesystem.                                  |
 
 #### Reserved
 
@@ -123,7 +123,7 @@ in the [registry](#extension-registry) above or a [draft](#drafts), and both res
 for a planned extension with no specification yet would be listed here until one is written.
 
 Bootloaders are not part of an operating system's program environment, so they are not extensions. They are covered
-by their own specification in [boot/](boot/README.md), which carries its own version number.
+by their own specification in [boot/](boot/README), which carries its own version number.
 
 ---
 

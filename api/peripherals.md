@@ -12,7 +12,7 @@ In NEET Computers, the global `io` table is the machine's window onto its hardwa
 peripherals attached to the computer, asks what they are and calls them, and it is how the computer speaks to every
 other computer on its network cables. An operating system that reports `ext.peripherals` must provide this global
 `io` table with the same functions, parameters and return types as the NEET Computers API, and defines it exactly
-when it reports the extension, as [globals.md](globals.md) describes.
+when it reports the extension, as [globals](globals) describes.
 
 NEET Computers hands this window to every program on the computer: any program can enumerate every peripheral,
 rename another program's tagged drive with `setTag`, call anything a peripheral exposes, and shout on the local
@@ -54,7 +54,7 @@ about which program has a window.
 
 ### Failures
 
-`io` keeps the NEET Computers failure convention and does not use the codes in [errors.md](../common/errors.md).
+`io` keeps the NEET Computers failure convention and does not use the codes in [errors](../common/errors).
 A failure is a plain Lua error carrying one of these messages, exactly as NEET Computers raises it:
 
 | Message                     | Raised when                                                                                                                                                          |
@@ -101,16 +101,16 @@ peripheral that must always be hidden or always allowed.
 `io.broadcastLocal(...)` hands the given values to every computer on the same network cable graph. The sender is
 not among the receivers. The call returns nothing, does not wait for anyone, and does not say whether anybody was
 listening: it is fire-and-forget, and a frame can be lost when a receiver's queue is full. What a frame may
-contain, and what survives the trip, is defined once in [wire.md](../network/wire.md); this specification adds
+contain, and what survives the trip, is defined once in [wire](../network/wire); this specification adds
 nothing to it.
 
 The NEATO Network protocols are built on this one primitive and on nothing else (see
-[the NEATO Network README](../network/README.md)). A program whose operating system permits it can therefore speak
+[the NEATO Network README](../network/README)). A program whose operating system permits it can therefore speak
 `dpp` or `spp` with peers on the same cable graph through `io.broadcastLocal` alone, without asking the operating
 system to route anything for it.
 
 A program that is permitted to receive broadcasts receives one as the raw NEET Computers event, unchanged and in
-order, through the [`event`](core/event.md) API of `core`:
+order, through the [`event`](core/event) API of `core`:
 
 | Name           | Values    | Description                                                                                                  |
 | -------------- | --------- | ------------------------------------------------------------------------------------------------------------- |

@@ -13,14 +13,14 @@ Requires: `core`
 This specification defines a connectionless transport-layer protocol comparable to the real-life User Datagram Protocol,
 called the Direct Payload Protocol, or DPP. It is a protocol without handshaking which in real networking would be
 referred to as unreliable due to its lack of protection from data loss, and because the NEET Computers media can lose a
-message when the receiving computer's event queue is full (see [Loss](spp-remote.md#loss)), it does not guarantee
-delivery in practice either. A program that needs delivery to be guaranteed uses [SPP](spp.md).
+message when the receiving computer's event queue is full (see [Loss](spp-remote#loss)), it does not guarantee
+delivery in practice either. A program that needs delivery to be guaranteed uses [SPP](spp).
 
 An operating system that reports `ext.dpp` must provide the `dpp` API described at the end of this file, and must
 handle DPP messages as described here.
 
-A DPP payload is encoded as described in [payload encoding](wire.md#payload-encoding), with the same rules for a legal
-payload. A DPP message is sent with the following header to another computer through [RPP](rpp.md), addressed to the
+A DPP payload is encoded as described in [payload encoding](wire#payload-encoding), with the same rules for a legal
+payload. A DPP message is sent with the following header to another computer through [RPP](rpp), addressed to the
 address that the program requested.
 
 ```
@@ -53,7 +53,7 @@ program knows what destination to target should it want to formulate a reply.
 
 ### payload
 
-The `payload` field can be any valid payload according to [the payload encoding rules](wire.md#payload-encoding).
+The `payload` field can be any valid payload according to [the payload encoding rules](wire#payload-encoding).
 The program that sent the DPP message passes that payload as the argument to `dpp.send`, which raises a few errors if
 it is invalid. If the payload is a dictionary table, then it SHOULD have a `protocol` entry with the application-layer
 protocol name/header for programs to check against, and if the payload is an array table, then its first entry SHOULD be
@@ -70,7 +70,7 @@ the protocol name/header, but neither of these are required.
 | dpp.send     | Sends a message. `source_port` defaults to `-1`. Fails if the ports or the payload are not valid.      | target_addresss (string), target_port (int), payload (any), source_port (int?) | true, or nil, code and message |
 
 A failing function returns `nil`, then the code, then a message, as defined in
-[errors.md](../common/errors.md). The required codes are:
+[errors](../common/errors). The required codes are:
 
 | Function     | Condition                                              | Code           |
 | ------------ | ------------------------------------------------------ | -------------- |
@@ -92,7 +92,7 @@ When a message arrives for a port that a program is listening on, that program r
 
 `dpp` (payload, source_address, source_port)
 
-through [`event`](../api/core/event.md).
+through [`event`](../api/core/event).
 
 ---
 

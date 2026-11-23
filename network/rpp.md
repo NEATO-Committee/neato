@@ -19,7 +19,7 @@ to send packets, and pass them on.
 
 RPP is called the Routed Packet Protocol because that is the part of it that was missing. NEET Computers has no
 addresses, so every message sent with `io.broadcastLocal` or an Access Point reaches everyone the medium reaches, and
-nobody can say who sent it (see [Media](spp-remote.md#media)). RPP builds addressing on top of that, and nothing else
+nobody can say who sent it (see [Media](spp-remote#media)). RPP builds addressing on top of that, and nothing else
 is needed from the medium.
 
 RPP is meant to be small. NEET networks are small (hundreds of computers, tens of hops), the medium throws away messages when
@@ -41,7 +41,7 @@ transport protocols use RPP to address another computer, and programs reach it t
 | interface | One medium that a host is connected to: the network cable graph (`wired`), or an Access Point (`wireless`). |
 | neighbour | A host that this host can hear directly on an interface, without a router in between.                       |
 | link      | The path between a host and one neighbour.                                                                  |
-| frame     | A list of values as defined in [wire.md](wire.md#frames). An RPP packet is a frame.                         |
+| frame     | A list of values as defined in [wire](wire#frames). An RPP packet is a frame.                         |
 
 ---
 
@@ -78,7 +78,7 @@ A host has one interface for each medium it can use, at most one of each in this
 | Interface    | Medium                                                                         | Sends with                           |
 | ------------ | ------------------------------------------------------------------------------ | ------------------------------------ |
 | `"wired"`    | `io.broadcastLocal`: all hosts on the same network cable graph                 | `io.broadcastLocal(...)`             |
-| `"wireless"` | an Access Point: all Access Points in range (see [Media](spp-remote.md#media)) | `broadcast(...)` of the Access Point |
+| `"wireless"` | an Access Point: all Access Points in range (see [Media](spp-remote#media)) | `broadcast(...)` of the Access Point |
 
 An OS implements RPP on one interface or both. An OS with both can be a router between them, which is how a wired
 segment is connected to a wireless one. A host that touches two separate cable networks can be a router between them
@@ -92,7 +92,7 @@ either of them if it is a router (see `rpp.setRouter`).
 - The receiver is not told who sent it, so every packet carries its own source address. That address is not
   checked by anything. Anybody can write anything in it.
 - A frame is not delivered to the host that sent it.
-- A frame can be lost, if the receiver's queue is full (see [Loss](spp-remote.md#loss)). It can also be late
+- A frame can be lost, if the receiver's queue is full (see [Loss](spp-remote#loss)). It can also be late
   by up to a tick, and a wired host that was just connected can be missed for about a second.
 - On `wireless`, only the sender's range counts, so a link can work in one direction and not in the other. The
   receiver learns the distance in blocks (see `distance` below), which is useful as a hint and is not an identity.
@@ -117,7 +117,7 @@ An RPP packet is one frame:
 | 6 and on | transport   | values  | One complete frame of a transport protocol. Its first value, at position 6, names the protocol: `"dpp"`, `"spp"` or `"rcp"`. |
 
 The transport frame has at most 11 values, because a frame has at most 16 and the header takes 5. All the rules in
-[wire.md](wire.md#frames) hold for the packet as a whole, so, for example, the strings of the whole packet together
+[wire](wire#frames) hold for the packet as a whole, so, for example, the strings of the whole packet together
 are at most 4608 characters.
 
 `destination` and `next` differ when a packet is being passed through a router. In the first hop of a packet to a
@@ -125,7 +125,7 @@ neighbour they are equal.
 
 A packet is valid only if the first value is `"rpp"`, `destination`, `source` and `next` are addresses (and `source`
 is not the broadcast address), `next` is the broadcast address exactly when `destination` is, `ttl` is an integer from 1
-to 256, there is a transport frame, and the frame follows [wire.md](wire.md#frames). A host drops packets that are not
+to 256, there is a transport frame, and the frame follows [wire](wire#frames). A host drops packets that are not
 valid without answering them.
 
 ---
@@ -157,7 +157,7 @@ interface. `ttl` starts at 256, except for control frames to the broadcast addre
 
 A packet to the host's own address is never sent. The routing table does not contain the host's own address, so the send
 fails with `EHOSTUNREACH`. Connections between programs on the same computer are `ext.spp` with scope `"local"` and never
-use RPP, and `spp.connect` with scope `"network"` never looks on this computer (see [spp.md](spp.md#scope)).
+use RPP, and `spp.connect` with scope `"network"` never looks on this computer (see [spp](spp#scope)).
 
 ---
 
@@ -255,14 +255,14 @@ which is why a vector has to be sent in pieces when there are more than 136 host
 
 ### Transports over RPP
 
-- [SPP](spp.md). With `ext.rpp`, an OS carries the frames of `ext.sppRemote` as the transport frame of RPP packets,
-  and `spp.connect` accepts `opts.host` (see [spp.md](spp.md#the-spp-api)). The `syn` goes to `opts.host`, or, if there
+- [SPP](spp). With `ext.rpp`, an OS carries the frames of `ext.sppRemote` as the transport frame of RPP packets,
+  and `spp.connect` accepts `opts.host` (see [spp](spp#the-spp-api)). The `syn` goes to `opts.host`, or, if there
   is none, to the broadcast address, which is how a program connects to "whichever host answers first". The `synack`
   goes to the source address of the `syn`, and every later frame to the address that each end recorded then (see [With
-  RPP](spp-remote.md#with-rpp)). A connection no longer belongs to one medium: it follows the routes. The `peer` of a
+  RPP](spp-remote#with-rpp)). A connection no longer belongs to one medium: it follows the routes. The `peer` of a
   connection is `{ origin = "remote", host = address }`, where the host is the source address of its packets, and like
   every source address it is not authenticated.
-- [DPP](dpp.md). `dpp.md` defines a message as a table, which a frame cannot hold (see [wire.md](wire.md)), so it
+- [DPP](dpp). `dpp` defines a message as a table, which a frame cannot hold (see [wire](wire)), so it
   has to be revised before it can be carried at all. It should then be carried the same way as SPP, as the transport
   frame of an RPP packet with the protocol name `"dpp"`, and `dpp.send` should get a destination host. Until then DPP is
   outside RPP.
@@ -286,7 +286,7 @@ which is why a vector has to be sent in pieces when there are more than 136 host
 `age` is the number of seconds since the entry was last refreshed. `distance` is only present on `wireless` neighbours, in
 blocks, and is `nil` otherwise. The routing table does not include the host's own address.
 
-The failure codes are the shared NEATO codes defined in [errors.md](../common/errors.md):
+The failure codes are the shared NEATO codes defined in [errors](../common/errors):
 
 | Code           | Meaning in RPP                                 |
 | -------------- | ---------------------------------------------- |

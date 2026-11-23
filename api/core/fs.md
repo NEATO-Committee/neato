@@ -10,19 +10,19 @@ A NEATO compliant environment must provide a global `fs` API for working with fi
 raw NEET Computers `files` API, whose administrative functions (creating, deleting and hiding partitions, choosing the
 boot partition, and so on) are not part of `core`.
 
-Every path taken by `fs` is in the format defined in [paths.md](../../common/paths.md). It may be a full path
-(`disk:partition:/dir/file`) or a path relative to [`CWD`](cwd.md). What a program may see or change is decided by the
+Every path taken by `fs` is in the format defined in [paths](../../common/paths). It may be a full path
+(`disk:partition:/dir/file`) or a path relative to [`CWD`](cwd). What a program may see or change is decided by the
 operating system, which may refuse any operation.
 
-An extension may add functions to the `fs` table (for example [`ext.perms`](../perms.md) adds `fs.chmod`). An operating
+An extension may add functions to the `fs` table (for example [`ext.perms`](../perms) adds `fs.chmod`). An operating
 system must define such a function only when it reports the extension that specifies it, so a program can test for it
-with [`sys.hasExtension`](sys.md) or by checking for `nil`.
+with [`sys.hasExtension`](sys) or by checking for `nil`.
 
 On failure, functions that return a result return `nil`, then an error code, then a message, as defined in
-[errors.md](../../common/errors.md): the code is one of the required ones listed under [Failure codes](#failure-codes), and
+[errors](../../common/errors): the code is one of the required ones listed under [Failure codes](#failure-codes), and
 the message is for humans and must not be compared. Functions that answer a question with a boolean, and
 [`fs.getPoint`](#filesystem-points), which answers `nil` for a point that is not provided, do not fail this way. A path
-that is not valid according to `paths.md`, or a value of the wrong type, raises an error instead.
+that is not valid according to `paths`, or a value of the wrong type, raises an error instead.
 
 | Name             | Description                                                                                                                                              | Arguments                    | Returns                                            |
 | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- | -------------------------------------------------- |
@@ -33,7 +33,7 @@ that is not valid according to `paths.md`, or a value of the wrong type, raises 
 | fs.makeDir       | Creates a directory. The parent directory must already exist, and the path must not.                                                                     | path (string)                | true, or nil, code and message                     |
 | fs.delete        | Deletes a file or an empty directory. A partition root cannot be deleted.                                                                                | path (string)                | true, or nil, code and message                     |
 | fs.open          | Opens a file. See below.                                                                                                                                 | path (string), mode (string) | handle (table), or nil, code and message           |
-| fs.resolve       | Returns the full, normalized form of a path, without checking that it exists. See [paths.md](../../common/paths.md). The disk is always given as its ID. | path (string)                | full path (string), or nil, code and message       |
+| fs.resolve       | Returns the full, normalized form of a path, without checking that it exists. See [paths](../../common/paths). The disk is always given as its ID. | path (string)                | full path (string), or nil, code and message       |
 | fs.rename        | Renames (moves) a file or directory. See [Renaming](#renaming).                                                                                          | old (string), new (string)   | true, or nil, code and message                     |
 | fs.stat          | Returns information about a file or directory. See [File information](#file-information).                                                                | path (string)                | info (table), or nil, code and message             |
 | fs.getDisks      | Returns the disks that are present, in ascending order of slot.                                                                                          | none                         | disks (table of `{slot = int, id = string}`)       |
@@ -77,12 +77,12 @@ itself afterwards.
 
 | Field   | Type          | Meaning                                                                                                                                           |
 | ------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `type`  | string        | `"file"` or `"dir"`. `"other"` covers everything else (for example a device). `"link"` is used only by the [`ext.symlink`](../symlink.md) extension. |
+| `type`  | string        | `"file"` or `"dir"`. `"other"` covers everything else (for example a device). `"link"` is used only by the [`ext.symlink`](../symlink) extension. |
 | `size`  | int, optional | The size in bytes. `nil` when the object has no meaningful size (a directory, for example) or the operating system does not report one.           |
-| `mtime` | int, optional | The last modification time, in seconds on the [`ext.time`](../time.md) wall clock. `nil` when the operating system does not track times.             |
+| `mtime` | int, optional | The last modification time, in seconds on the [`ext.time`](../time) wall clock. `nil` when the operating system does not track times.             |
 
 Fields that are not listed here may be present when an extension that defines them is reported (for example
-[`ext.perms`](../perms.md)). A program must ignore any field it does not know. A missing optional field and a field the
+[`ext.perms`](../perms)). A program must ignore any field it does not know. A missing optional field and a field the
 program does not know are both just `nil`, so one table serves every operating system.
 
 ---
@@ -101,7 +101,7 @@ directory not onto a file, and a directory not into itself or a directory below 
 
 ### Failure codes
 
-A function that can fail uses the exact code below for each condition, as defined in [errors.md](../../common/errors.md).
+A function that can fail uses the exact code below for each condition, as defined in [errors](../../common/errors).
 The code is the second result, after the `nil`. `fs.exists`, `fs.isFile` and `fs.isDir` answer with a boolean and do
 not fail; `fs.getDisks` and `fs.getPoints` always succeed; and `fs.getPoint` answers `nil` for a point that is not
 provided.
@@ -200,7 +200,7 @@ more than one point, such as any persistent storage, picks the first one that is
 local dir = fs.getPoint("storage.state") or fs.getPoint("storage.persistent")
 ```
 
-Every path returned is a full path in the [paths](../../common/paths.md) format, names a directory, and ends in `/`. The
+Every path returned is a full path in the [paths](../../common/paths) format, names a directory, and ends in `/`. The
 operating system chooses it, it is not derived from `CWD`, and it does not change while the program runs. The directory
 may or may not already exist, and a program that needs it can check with `fs.exists` or create it with `fs.makeDir` if
 the operating system allows it; support for a point also says nothing about whether the program may write there. The

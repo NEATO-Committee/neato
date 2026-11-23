@@ -12,19 +12,19 @@ An environment that reports `ext.internet` must provide the global `internet` ta
 parameters and return types as the NEET Computers API. It is the machine's escape hatch to the real-world
 internet: HTTP requests and WebSocket connections to servers outside the game, made from a computer inside it.
 It keeps its raw NEET names so that a program written for NEET Computers works unchanged on an operating system
-that reports this extension, and it is a raw passthrough extension in the way [ext.screen](screen.md) and
-[ext.chip](chip.md) are: the operating system carries it as it is and does not re-model it.
+that reports this extension, and it is a raw passthrough extension in the way [ext.screen](screen) and
+[ext.chip](chip) are: the operating system carries it as it is and does not re-model it.
 
-`ext.internet` has nothing to do with the internet layer of [NEATO Network](../network/README.md), which is
+`ext.internet` has nothing to do with the internet layer of [NEATO Network](../network/README), which is
 `ext.rpp`. The protocols of NEATO Network run between NEET computers, inside the game's world; `internet`
 reaches whatever real-world network the machine running the game is attached to. The two share a subject and
 nothing else.
 
 `internet` keeps the NEET Computers API unchanged, including how it reports its own failures: a failure raised
 at call time is a Lua error with a plain string message, and there is nothing for an operating system to
-redirect, so it does not use the codes in [errors.md](../common/errors.md). Very little fails at call time,
+redirect, so it does not use the codes in [errors](../common/errors). Very little fails at call time,
 though. The three network calls return at once with an id, and the answer - a response, a message, or the news
-that a message was dropped - arrives later as an [event](core/event.md). The events are defined below. An
+that a message was dropped - arrives later as an [event](core/event). The events are defined below. An
 operating system that does not report this extension must not define them, like any other name an extension
 carries.
 
@@ -84,11 +84,11 @@ business; the program's contract is that a refused connection raises and a begun
 
 ### Responses and websocket events
 
-The events are ordinary events of [core](core/event.md), delivered to a program's queue in the order the
+The events are ordinary events of [core](core/event), delivered to a program's queue in the order the
 implementation reported them. A response is reported when it completes, so answers to two requests may arrive in
 either order whatever order the requests were made in, and messages, responses and send results interleave by
 arrival: a program matches its answers by `id`, never by order. Which program receives which of these events is
-up to the operating system, as [core/event.md](core/event.md) says for events generally, usually the program
+up to the operating system, as [core/event](core/event) says for events generally, usually the program
 that made the call, and a program that was not delivered an event never sees it.
 
 | Name                 | Values                                                                          | Description                                                          |
@@ -162,7 +162,7 @@ succeed. An abnormal end is reported as code `1006` with reason `Abnormal Closur
 closes every live socket with code `1001` and reason `Going Away`.
 
 If the handshake fails, the connection never opens and no event reports it: the id simply never answers. A
-program that must not wait forever gives its `event.pull` a timeout, as [core/event.md](core/event.md) allows.
+program that must not wait forever gives its `event.pull` a timeout, as [core/event](core/event) allows.
 
 ---
 
@@ -179,10 +179,10 @@ fill the buffer.
 
 On top of the hardware's gate, an operating system MAY deny internet access itself, to every program or only to
 some - why, and which programs, is entirely its policy and is not defined here, any more than
-[chip.md](chip.md) defines why an operating system blocks `shutdown`. A denied call must have no effect: no
+[chip](chip) defines why an operating system blocks `shutdown`. A denied call must have no effect: no
 request may leave the machine, no socket may open, and no `HttpResponse` or websocket event may be produced for
 it. It must also fail in a way the program can detect: it raises a Lua error, carrying a plain string message
-the operating system chooses, exactly as [chip.md](chip.md) blocks destructive calls. The distinction this draws
+the operating system chooses, exactly as [chip](chip) blocks destructive calls. The distinction this draws
 is deliberate: an error means this program was refused by this operating system, while an id means the machine
 itself took the call.
 

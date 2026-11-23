@@ -21,9 +21,9 @@ or wirelessly connected to.
 The two media that NEET Computers has are a wired one (`io.broadcastLocal`, which reaches every computer on the same
 network cable graph) and a wireless one (the Access Point peripheral, which reaches every other Access Point in range).
 Both send to _everybody_ in reach, lose messages when a receiver's queue is full, and never say who sent a message.
-There is no separate link layer protocol. [rpp.md](rpp.md#interfaces) describes how the media are used.
+There is no separate link layer protocol. [rpp](rpp#interfaces) describes how the media are used.
 
-- [Wire format (wire.md)](wire.md) - What a frame can contain on either medium (which values survive the trip, and the
+- [Wire format (wire)](wire) - What a frame can contain on either medium (which values survive the trip, and the
   limits that follow), and the encoding that carries tables and arbitrary strings through it. Shared definitions, not
   an extension.
 
@@ -32,7 +32,7 @@ There is no separate link layer protocol. [rpp.md](rpp.md#interfaces) describes 
 The internet layer consists of protocols for transporting network packets from the originating host to the correct
 destination, possibly across different networks.
 
-- [Routed Packet Protocol (rpp.md)](rpp.md) - Host addresses, packet headers, neighbour discovery and distance-vector
+- [Routed Packet Protocol (rpp)](rpp) - Host addresses, packet headers, neighbour discovery and distance-vector
   routing, so that a packet can cross routers. It is the draft NEATO extension `ext.rpp`.
 
 ### Transport Layer
@@ -42,12 +42,12 @@ allowing applications to send packets to, and listen for packets on, ports. The 
 these protocols directly, routing the packet's payload to the program that is listening on the specified port,
 and sending transport-layer packets based on the data that the program sends and the destination.
 
-- [Direct Payload Protocol (dpp.md)](dpp.md) - A connectionless transport-layer protocol comparable to the real-life
+- [Direct Payload Protocol (dpp)](dpp) - A connectionless transport-layer protocol comparable to the real-life
   User Datagram Protocol. It is the NEATO extension `ext.dpp`.
-- [Sequenced Payload Protocol (spp.md)](spp.md) - A connection-oriented transport-layer protocol with reliable,
+- [Sequenced Payload Protocol (spp)](spp) - A connection-oriented transport-layer protocol with reliable,
   in-order, message-preserving connections between programs on one computer, per-connection inboxes, pollable
   handles, and peer identity. It is the NEATO extension `ext.spp`. Connections between computers are a draft
-  extension, [`ext.sppRemote`](spp-remote.md).
+  extension, [`ext.sppRemote`](spp-remote).
 
 ### Application Layer
 

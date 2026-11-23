@@ -14,7 +14,7 @@ that programs such as `whoami`, `id` and `ls` can name users, and so that an ope
 "may this program do that" decisions in an identity instead of in one flag for the whole computer.
 
 Nothing in this specification is about logging in. Asking for a password and switching which user a program runs as
-is [`ext.auth`](auth.md)'s work, and starting a program as another user is defined by no extension; both are
+is [`ext.auth`](auth)'s work, and starting a program as another user is defined by no extension; both are
 deliberately left out of version 1.
 
 A user is described by a table:
@@ -24,7 +24,7 @@ A user is described by a table:
 | `id`     | int              | The user's id, chosen by the operating system. There is no reserved id: whether a user is an administrator is the `admin` field, never the id.             |
 | `name`   | string           | The login name.                                                                                                                                            |
 | `admin`  | boolean          | Whether the user is an administrator. An operating system may have any number of administrators, or none.                                                  |
-| `home`   | string, optional | A full [path](../common/paths.md), ending in `/`, to the user's home directory. It may not exist. `nil` when the operating system has no home directories. |
+| `home`   | string, optional | A full [path](../common/paths), ending in `/`, to the user's home directory. It may not exist. `nil` when the operating system has no home directories. |
 | `groups` | table, optional  | The ids of the groups the user belongs to, when the operating system has groups.                                                                           |
 
 | Name         | Description                                                         | Arguments     | Returns                      |
@@ -39,7 +39,7 @@ one account. `user.list` may hold fewer accounts than exist when the operating s
 it never fails for that reason.
 
 Every returned table is a snapshot, and changing it does nothing. None of these functions fail: a user that does
-not exist is `nil`, and a mistake of use raises an error, as described in [errors.md](../common/errors.md).
+not exist is `nil`, and a mistake of use raises an error, as described in [errors](../common/errors).
 
 ---
 
@@ -63,7 +63,7 @@ print(table.concat(names, ", "))
 
 ### Footnotes
 
-On passwords and switching users: [`ext.auth`](auth.md) verifies a password and switches the user this program runs
+On passwords and switching users: [`ext.auth`](auth) verifies a password and switches the user this program runs
 as; starting another program as a different user is still defined by no extension. Programs that need to know only
 whether they may do something should ask the operating system by trying, and read the `EACCES`, instead of deciding
 from `admin` themselves; `admin` is for display and for choosing what to offer.

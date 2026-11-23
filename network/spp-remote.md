@@ -6,16 +6,16 @@ Version: 1
 
 Requires: `ext.spp`
 
-Status: draft. `ext.sppRemote` is a reserved name (see the [main README](../README.md)). An operating system must
+Status: draft. `ext.sppRemote` is a reserved name (see the [main README](../README)). An operating system must
 not report it as supported until this notice is removed. Nothing in `ext.spp` depends on it.
 
 ---
 
-This specification describes how [SPP](spp.md) connections are made between programs on different computers. It
+This specification describes how [SPP](spp) connections are made between programs on different computers. It
 adds nothing to the `spp` API. It makes `scope = "network"` work on `spp.listen` and `spp.connect`, which without this
 extension fail with `ENOTSUP`. Programs written for `ext.spp` need no changes.
 
-SPP frames can travel in two ways. Where the OS has [`ext.rpp`](rpp.md), every frame is carried in an RPP packet, so
+SPP frames can travel in two ways. Where the OS has [`ext.rpp`](rpp), every frame is carried in an RPP packet, so
 that it can be addressed to one host and routed across several (see [With RPP](#with-rpp)). Where it has not, frames are
 sent directly on the medium and reach every host that can hear them (see [Without RPP](#without-rpp)).
 
@@ -41,7 +41,7 @@ An application that only sends occasional, self-contained notifications between 
 NEET Computers has two ways for one computer to put a message in front of another. An operating system implements
 SPP over one of them or both. They behave differently.
 
-Both carry a frame, a short list of primitive values, and nothing else. [wire.md](wire.md) says exactly which values
+Both carry a frame, a short list of primitive values, and nothing else. [wire](wire) says exactly which values
 survive the trip: strings must only contain bytes from `0x01` to `0x7F`, integers must fit in 32 bits, a frame has at most 16
 values, and tables are not possible at all.
 
@@ -82,7 +82,7 @@ Consequences for SPP:
 
 ### Segments
 
-An SPP segment is a frame. Every frame follows [wire.md](wire.md#frames). The segment kinds and their values are:
+An SPP segment is a frame. Every frame follows [wire](wire#frames). The segment kinds and their values are:
 
 | Position | `syn`             | `synack`     | `data`                    | `ack`        | `fin`     | `rst`     |
 | -------- | ----------------- | ------------ | ------------------------- | ------------ | --------- | --------- |
@@ -103,9 +103,9 @@ An SPP segment is a frame. Every frame follows [wire.md](wire.md#frames). The se
   of the `ack` has delivered in order, and 0 if none. window is the number of free places in the sender's inbox.
   A counter has to stay within 2^31 - 1 because a frame cannot hold more, so a connection that reaches 2^30 messages in
   one direction is reset (`ECONNRESET`).
-- payload is the message in the [payload encoding](wire.md#payload-encoding): the raw encoding of the value, made
+- payload is the message in the [payload encoding](wire#payload-encoding): the raw encoding of the value, made
   into Base64. A payload that is longer than 3072 bytes raw cannot be sent over the network (`EMSGSIZE`), because it
-  would not fit in a frame. `conn.maxPayload` of a network connection says so (see [spp.md](spp.md)), and is the
+  would not fit in a frame. `conn.maxPayload` of a network connection says so (see [spp](spp)), and is the
   smaller of this and `maxPayload` from `spp.getLimits`. SPP does not fragment.
 
 A receiver validates every segment completely (the number of values, the type of each, ranges, the length and characters
@@ -139,7 +139,7 @@ the largest range, so that links work in both directions.
 
 ### With RPP
 
-An OS that has `ext.rpp` carries every segment as the transport frame of an [RPP packet](rpp.md#packets). It never
+An OS that has `ext.rpp` carries every segment as the transport frame of an [RPP packet](rpp#packets). It never
 sends a bare segment on a medium, and ignores bare segments that arrive.
 
 - `opts.host` of `spp.connect` is the address of a host. The `syn` is sent to it and routed there. If `opts.host` is
@@ -149,7 +149,7 @@ sends a bare segment on a medium, and ignores bare segments that arrive.
   carried it. Each end records the source address of the first packet it received from the other end (the `syn` for the
   server, the accepted `synack` for the client) as the address of its peer. Every later segment of the connection goes
   to that address, and a segment of the connection that arrives from any other source address is dropped. That keeps
-  `peer.host` true for the whole connection, as [spp.md](spp.md#peer-identity) requires, and means that a forged packet
+  `peer.host` true for the whole connection, as [spp](spp#peer-identity) requires, and means that a forged packet
   cannot redirect a connection.
 - If there is no route to `opts.host`, `connect` fails with `EHOSTUNREACH` at once.
 - A connection is not tied to a medium. Segments follow the routes, which may change during a connection. Loss and
@@ -210,7 +210,7 @@ so a receiver never buffers anything out of order.
 `conn:close()` sends `fin` with the next sequence number once all earlier messages have been sent. It is delivered and
 acknowledged like data. After `conn:close()` returns, the operating system keeps the state of the connection, and goes
 on retransmitting, until the `fin` has been acknowledged or the retransmissions have run out, even if the program has
-ended. That is what makes messages that were already sent still arrive, as [spp.md](spp.md#closing) promises. When a
+ended. That is what makes messages that were already sent still arrive, as [spp](spp#closing) promises. When a
 receiver has delivered a `fin` in order, `recv` returns `EPIPE` once the inbox is empty. `rst` ends a connection at
 once in both ends with `ECONNRESET`, and is sent when a program is killed, a limit is hit, retransmissions have run out, or
 the listener of a connection that has not been accepted yet is closed (a half-open connection of that listener is simply
@@ -226,7 +226,7 @@ Both media reach computers that are not part of the connection, and neither name
   Programs that need confidentiality use the `crypto` API inside their payloads.
 - Nothing is authenticated. Ids are only unguessable to computers that did not hear them, so a nearby computer can
   inject segments or reset a connection. `peer.origin = "remote"` means "not on this computer", not "trusted". With RPP,
-  `peer.host` is only a claim as well (see [RPP](rpp.md#security-considerations)).
+  `peer.host` is only a claim as well (see [RPP](rpp#security-considerations)).
 - Flooding. A computer that sends many `syn` segments can fill the half-open table and the backlog, and can fill a
   victim's event queue, which holds only 75 events (see [Loss](#loss)). An operating system should limit half-open
   connections both overall and per listener, drop the oldest first, and drop frames that cannot be valid cheaply and

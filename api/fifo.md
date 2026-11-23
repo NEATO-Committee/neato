@@ -8,42 +8,42 @@ Requires: `core`
 
 ---
 
-A NEATO compliant operating system that reports this extension must provide named pipes in its [`fs`](core/fs.md)
-filesystem: `fs.mkfifo` creates one at a path, and programs open it with [`fs.open`](core/fs.md#opening-files) like
+A NEATO compliant operating system that reports this extension must provide named pipes in its [`fs`](core/fs)
+filesystem: `fs.mkfifo` creates one at a path, and programs open it with [`fs.open`](core/fs#opening-files) like
 any other object at a path. It is what lets two programs connect a data stream when they share nothing else. The
-ends of an anonymous pipe travel only where [`ext.proc`](proc.md) hands them, through `proc.spawn` to a child; a
+ends of an anonymous pipe travel only where [`ext.proc`](proc) hands them, through `proc.spawn` to a child; a
 named pipe needs no common parent, because both sides find each other through a name in the filesystem instead.
 
 A named pipe is a pipe with a name. Nothing is stored on the disk: the object at the path is a queue in the
-operating system's memory. The name exists from `fs.mkfifo` until [`fs.delete`](core/fs.md) removes it or the
+operating system's memory. The name exists from `fs.mkfifo` until [`fs.delete`](core/fs) removes it or the
 computer stops, and it is not kept across reboots, like the data in the `storage.runtime`
-[point](core/fs.md#filesystem-points): no named pipe exists when the computer starts again, and `fs.mkfifo` is the
+[point](core/fs#filesystem-points): no named pipe exists when the computer starts again, and `fs.mkfifo` is the
 only way one comes to be.
 
 This extension adds one function to the `fs` API. An operating system defines it exactly when it reports this
-extension, as [fs.md](core/fs.md) describes.
+extension, as [fs](core/fs) describes.
 
 | Name      | Description                       | Arguments     | Returns                        |
 | --------- | --------------------------------- | ------------- | ------------------------------ |
 | fs.mkfifo | Creates a named pipe at a path.   | path (string) | true, or nil, code and message |
 
-`fs.mkfifo(path)` creates a named pipe at `path`, in the [paths](../common/paths.md) format. The parent directory
+`fs.mkfifo(path)` creates a named pipe at `path`, in the [paths](../common/paths) format. The parent directory
 must already exist, and nothing may already be at the path. Creating the pipe writes nothing to storage, so there is
 no space condition to fail on.
 
 Until it is deleted, the name behaves like the name of any other object: `fs.exists` answers `true` for it,
-`fs.isFile` and `fs.isDir` answer `false`, `fs.list` includes it, and [`fs.stat`](core/fs.md#file-information)
-reports it with the `type` `"other"`, which [fs.md](core/fs.md#file-information) uses for everything that is not a
-file or a directory, and with no `size`. [`fs.rename`](core/fs.md#renaming) moves the name as it moves any object,
-and [`fs.delete`](core/fs.md) removes it; programs that have the pipe open keep it through either, the way a
+`fs.isFile` and `fs.isDir` answer `false`, `fs.list` includes it, and [`fs.stat`](core/fs#file-information)
+reports it with the `type` `"other"`, which [fs](core/fs#file-information) uses for everything that is not a
+file or a directory, and with no `size`. [`fs.rename`](core/fs#renaming) moves the name as it moves any object,
+and [`fs.delete`](core/fs) removes it; programs that have the pipe open keep it through either, the way a
 renamed file stays the same file its open handles see.
 
 ---
 
 ### Opening a fifo
 
-[`fs.open`](core/fs.md#opening-files) opens a named pipe like a file: the path names the fifo, `mode` is one of the
-modes fs.md defines, and the trailing `b` is accepted and has no effect. When the object at the path is a named
+[`fs.open`](core/fs#opening-files) opens a named pipe like a file: the path names the fifo, `mode` is one of the
+modes fs defines, and the trailing `b` is accepted and has no effect. When the object at the path is a named
 pipe, the modes mean:
 
 | Mode | Meaning                                                                         |
@@ -54,11 +54,11 @@ pipe, the modes mean:
 
 The first program to open waits, and when the matching end is opened, both `fs.open` calls return their handles. The
 waiting is not a failure and has no timeout. `fs.open` yields while it waits, and events that arrive stay in the
-event queue, as they do while [`proc.wait`](proc.md#waiting) waits; the `EINTR` rule of
-[`stdio.readLine`](stdio.md#reading-a-line) is special to that function and does not apply here. If the fifo stops
+event queue, as they do while [`proc.wait`](proc#waiting) waits; the `EINTR` rule of
+[`stdio.readLine`](stdio#reading-a-line) is special to that function and does not apply here. If the fifo stops
 existing while a program waits, its `fs.open` fails with `ENOENT`.
 
-When the object at the path is not a named pipe, `fs.open` does what [fs.md](core/fs.md) says, and nothing in this
+When the object at the path is not a named pipe, `fs.open` does what [fs](core/fs) says, and nothing in this
 extension changes it: `"r"` on a path with nothing there fails with `ENOENT`, and `"w"` and `"a"` create a regular
 file, which is not a fifo. A program that means to open a fifo creates it with `fs.mkfifo` first.
 
@@ -66,11 +66,11 @@ file, which is not a fifo. A program that means to open a fifo creates it with `
 
 ### Reading and writing
 
-A fifo end is a handle with the same five methods, called with `:`, as the handles [`fs.open`](core/fs.md#opening-files)
-returns, which is how [stdio.md](stdio.md) describes the standard streams, and it follows the same rules: a wrong
+A fifo end is a handle with the same five methods, called with `:`, as the handles [`fs.open`](core/fs#opening-files)
+returns, which is how [stdio](stdio) describes the standard streams, and it follows the same rules: a wrong
 argument type raises an error, a method on a closed handle raises an error, and a refusal returns `nil`, then a code
-from [errors.md](../common/errors.md), then a message. What the connection between the ends does is what a pipe of
-[proc.md](proc.md#pipes) does:
+from [errors](../common/errors), then a message. What the connection between the ends does is what a pipe of
+[proc](proc#pipes) does:
 
 - Writing copies the data into the pipe, and waits while the pipe is full. A fifo holds at least 4096 bytes before a
   write has to wait, like a pipe.
@@ -83,7 +83,7 @@ More than one program may hold each kind of end. The readers share what is writt
 of them, handed out in order to whichever reader reads next, and what one reader reads the others do not. Closing is
 what ends the connection: closing the last writing end gives the readers an ordinary end of file once they have read
 the rest, and closing the last reading end makes every further write fail with `EPIPE`. Handles still open when a
-program ends are closed by the operating system, as [fs.md](core/fs.md) says, which is what "every reading program
+program ends are closed by the operating system, as [fs](core/fs) says, which is what "every reading program
 has finished" counts. When every end is closed, whatever was still unread is dropped, and the next two programs to
 open the name start with an empty pipe.
 

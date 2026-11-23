@@ -11,7 +11,7 @@ Requires: `core`
 ---
 
 This specification defines a connection-oriented transport-layer protocol called the Sequenced Payload Protocol, or
-SPP. Where the [Direct Payload Protocol](dpp.md) sends independent datagrams to a port, SPP gives two programs a
+SPP. Where the [Direct Payload Protocol](dpp) sends independent datagrams to a port, SPP gives two programs a
 connection: messages arrive exactly once and in the order they were sent, message boundaries are kept (one `send` is
 one `recv`), and either side finds out when the other one is gone. It is comparable to a Unix `SOCK_SEQPACKET`
 socket, or to TCP with the message framing already done.
@@ -21,7 +21,7 @@ spaces: listening on DPP port 80 has no effect on SPP port 80. An OS may report 
 other way around.
 
 `ext.spp` covers connections between programs on the same computer. Connections to other computers are a separate,
-larger piece of work and are specified by [`ext.sppRemote`](spp-remote.md), which is a draft. Everything in this
+larger piece of work and are specified by [`ext.sppRemote`](spp-remote), which is a draft. Everything in this
 file is written so that a program does not change when remote connections are added: where something is local or
 remote, the program says so explicitly (see [Scope](#scope)).
 
@@ -35,7 +35,7 @@ An operating system that reports `ext.spp` must provide the `spp` API described 
   [Peer identity](#peer-identity)). The operating system fills this in. A program cannot choose it.
 - A program decides whether a listener can be reached from other computers. The default is that it cannot (see
   [Scope](#scope)). Local traffic never touches a network medium.
-- Every connection has its own inbox. SPP does not use the [event queue](../api/core/event.md) at all, so it can neither
+- Every connection has its own inbox. SPP does not use the [event queue](../api/core/event) at all, so it can neither
   fill it up nor lose data to `event.pull` filters. A full inbox slows the sender down, it never drops a message.
 - Listeners and connections can be waited on together, and together with the event queue (see [Polling](#polling)).
 
@@ -51,7 +51,7 @@ An operating system that reports `ext.spp` must provide the `spp` API described 
 | message    | One payload, sent with `conn:send` and received as one unit with `conn:recv`.                              |
 | inbox      | The bounded queue of received, not yet read messages that belongs to one connection.                       |
 
-Listeners and connections are handles in the same sense as the handles returned by [`fs.open`](../api/core/fs.md): tables
+Listeners and connections are handles in the same sense as the handles returned by [`fs.open`](../api/core/fs): tables
 with methods that are called with `:`. Calling a method on a closed handle raises an error. Handles that are still open
 when the program ends are closed by the operating system, as if the program had called `close`.
 
@@ -111,8 +111,8 @@ change afterwards. Both ends have one, describing the other end.
   define what a user is, so a program must treat the string as opaque and only compare it for equality. It is `nil` if
   the operating system has no user accounts, and it is always `nil` for a remote peer, because another computer's
   accounts cannot be checked. A program that makes a decision based on `user` must treat `nil` as "not allowed".
-- An extension may add fields to `peer`. [`ext.sppRemote`](spp-remote.md) adds `medium` and `distance`, or, with [`ext.
-rpp`](rpp.md), `host`. A program must ignore fields it does not know.
+- An extension may add fields to `peer`. [`ext.sppRemote`](spp-remote) adds `medium` and `distance`, or, with [`ext.
+rpp`](rpp), `host`. A program must ignore fields it does not know.
 - `id` identifies the peer program on this computer while it is running (an operating system with process IDs would
   use those). It means nothing on another computer and may be reused after the peer ends. It is `nil` if the operating
   system has none, and always `nil` for a remote peer.
@@ -126,7 +126,7 @@ closes the connection if it does not like what it sees.
 
 A message is a payload: a boolean, a number, a string, or a table whose keys and values are payloads. Tables may be
 nested at most 32 levels deep and must not refer to themselves, and `nan` cannot be a key or a value. Functions, threads
-and userdata cannot be sent, and metatables are not sent. These are the same rules as the [payload encoding](wire.md#
+and userdata cannot be sent, and metatables are not sent. These are the same rules as the [payload encoding](wire#
 payload-encoding) that connections between computers use, so a program that works over a local connection sends exactly
 the payloads that work over a network one, and an operating system that reports `ext.spp` without `ext.dpp` does not
 depend on DPP to know what a payload is. The operating system copies the payload when it is sent, so the sender and
@@ -169,7 +169,7 @@ A handle counts as readable when the matching call would not have to wait:
 | -------------------- | ----------------------------------------------------------------------------------------------------- |
 | listener             | A connection is waiting for `accept`.                                                                 |
 | connection           | `conn:recv` has something to return: a message is in the inbox, or the connection is closed or reset. |
-| the string `"event"` | The program's [event queue](../api/core/event.md) has at least one event. Nothing is removed from it.      |
+| the string `"event"` | The program's [event queue](../api/core/event) has at least one event. Nothing is removed from it.      |
 
 A connection counts as writable when `conn:send` would not have to wait: the peer's inbox has room, or the
 connection is closed or reset (in which case `send` fails immediately).
@@ -190,7 +190,7 @@ Polling only reports readiness. It never consumes a message, an event or a pendi
 
 `maxPayload` is the largest payload that can be sent, as the operating system measures it in bytes. For a local
 connection it may be treated as approximate. For a connection to another computer it is exact: the size of a payload is
-the length of its raw encoding in bytes (see [wire.md](wire.md#payload-encoding)). `inbox` is the number of messages
+the length of its raw encoding in bytes (see [wire](wire#payload-encoding)). `inbox` is the number of messages
 every connection's inbox holds, `backlog` is the largest backlog that `spp.listen` accepts, and `maxConnections` is how
 many handles one program may hold at the same time.
 
@@ -210,7 +210,7 @@ Connection (`kind = "connection"`, with read-only fields `port`, `peerPort`, `pe
 | conn:close | Closes the connection. See [Closing](#closing). Calling it again on a closed handle raises an error, as for every handle. | none                             | true                                    |
 
 `conn.maxPayload` is the largest payload that `conn:send` accepts on this connection. It is at most `maxPayload` from
-`spp.getLimits`, and is smaller for a connection to another computer (see [`ext.sppRemote`](spp-remote.md)).
+`spp.getLimits`, and is smaller for a connection to another computer (see [`ext.sppRemote`](spp-remote)).
 `conn.port` is the local port of the connection. `conn.peerPort` is the port of the peer: for a connection made with
 `spp.connect` it is the port that was connected to, for an accepted connection it is the port the operating system
 gave the connecting program.
@@ -224,7 +224,7 @@ result against `nil` and not for truthiness.
 ### Failure codes
 
 Functions that can fail return `nil`, then a code, then a human readable message, as defined in
-[errors.md](../common/errors.md). The code is part of the NEATO error registry and a program may compare it; the message
+[errors](../common/errors). The code is part of the NEATO error registry and a program may compare it; the message
 is only for humans. The codes SPP uses, and the condition each one reports, are:
 
 | Code           | Meaning in SPP                                                                                                 |

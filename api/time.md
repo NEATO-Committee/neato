@@ -52,7 +52,7 @@ No function in this API fails, and none of them yields.
 ### Failure codes
 
 None. A missing wall clock is answered with `nil`, and every mistake of use raises an error, as described in
-[errors.md](../common/errors.md).
+[errors](../common/errors).
 
 ---
 
