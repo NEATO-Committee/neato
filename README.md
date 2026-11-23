@@ -40,7 +40,7 @@ There are three kinds of name:
 | `ext.<name>`        | A standard extension, defined by a specification in this repository. Example: `ext.screen`. |
 | `x.<vendor>.<name>` | A non-standard extension defined by an OS or a third party. Example: `x.neetos.windows`.    |
 
-For contributions regarding non-standard extensions, you can check out the [vendor/README](vendor/README) file for more information.
+For contributions regarding non-standard extensions, you can check out the [vendor/](vendor/) file for more information.
 
 Names are case sensitive and every segment consists only of letters and digits.
 
@@ -75,7 +75,7 @@ keeps the names free until a specification is written and final.
 
 | Name         | Version | Requires | Specification                                                                                   | Contents                                                                                 |
 | ------------ | ------- | -------- | ----------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| `core`       | 4       |          | [api/](api/README), [common/paths](common/paths), [common/errors](common/errors) | Lua environment, the program model (arguments and exit status), `sys`, `event`, `term` (including line input), `fs`, `print`, `CWD`, paths, error codes |
+| `core`       | 4       |          | [api/](api/), [common/paths](common/paths), [common/errors](common/errors) | Lua environment, the program model (arguments and exit status), `sys`, `event`, `term` (including line input), `fs`, `print`, `CWD`, paths, error codes |
 | `ext.stdio`  | 1       | `core`   | [api/stdio](api/stdio)                                                                    | The standard input, output and error streams, line input, and what `print` writes to.    |
 | `ext.env`    | 1       | `core`   | [api/env](api/env)                                                                        | The environment variables of a program, and the `PATH` convention.                       |
 | `ext.time`   | 1       | `core`   | [api/time](api/time)                                                                      | A monotonic clock, a wall clock, and UTC calendar tables.                                |
@@ -123,7 +123,7 @@ in the [registry](#extension-registry) above or a [draft](#drafts), and both res
 for a planned extension with no specification yet would be listed here until one is written.
 
 Bootloaders are not part of an operating system's program environment, so they are not extensions. They are covered
-by their own specification in [boot/](boot/README), which carries its own version number.
+by their own specification in [boot/](boot/), which carries its own version number.
 
 ---
 

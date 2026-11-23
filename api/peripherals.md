@@ -105,7 +105,7 @@ contain, and what survives the trip, is defined once in [wire](../network/wire);
 nothing to it.
 
 The NEATO Network protocols are built on this one primitive and on nothing else (see
-[the NEATO Network README](../network/README)). A program whose operating system permits it can therefore speak
+[the NEATO Network ](../network/)). A program whose operating system permits it can therefore speak
 `dpp` or `spp` with peers on the same cable graph through `io.broadcastLocal` alone, without asking the operating
 system to route anything for it.
 

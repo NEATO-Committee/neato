@@ -6,7 +6,7 @@ Version: 1
 
 Requires: `ext.spp`
 
-Status: draft. `ext.sppRemote` is a reserved name (see the [main README](../README)). An operating system must
+Status: draft. `ext.sppRemote` is a reserved name (see the [main ](../)). An operating system must
 not report it as supported until this notice is removed. Nothing in `ext.spp` depends on it.
 
 ---

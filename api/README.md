@@ -4,7 +4,7 @@ Program API environment specifications.
 
 The NEATO API consists of the default \_G, events and handlers of the provided NEET Computers API, with changes and additions
 defined by the specifications. Which parts a given operating system provides is determined by `core` and the extensions
-it reports, as described in the [main README](../README).
+it reports, as described in the [main ](../).
 
 This does not require the API to explicitly behave the same as stock NEET Computers API, or that it cannot have additions
 from an operating system, but rather that the expected parameters and return types are the same across all OSes.

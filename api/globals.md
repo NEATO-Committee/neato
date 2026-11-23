@@ -16,7 +16,7 @@ The environment is what `core` provides plus, for every extension the operating 
 `sys.getExtensions`, the globals that extension defines. An environment must not contain a global that belongs to an
 extension it does not report. This applies to the raw NEET Computers APIs as well: `files`, `headsup`, `io`, `chip`
 and `internet` are not part of a NEATO environment. Their names are only available through the extensions that
-replace them (see the [main README](../README)). The name `event` is used by NEATO, but it is the
+replace them (see the [main ](../)). The name `event` is used by NEATO, but it is the
 NEATO [event](core/event) API and not the NEET Computers one.
 
 A global function that can fail reports the failure as `nil`, an error code, then a message, as defined in

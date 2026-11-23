@@ -125,7 +125,7 @@ NEET's normalized form, backslashes and all; it is passed through, not converted
 [paths](../common/paths) format.
 
 This is the hardware's power-on selection, not the NEATO bootloader's: a NEATO bootloader is configured through
-`boot.lua` instead (see [boot/README](../boot/README)).
+`boot.lua` instead (see [boot/](../boot/)).
 
 ---
 

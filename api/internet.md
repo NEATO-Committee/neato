@@ -15,7 +15,7 @@ It keeps its raw NEET names so that a program written for NEET Computers works u
 that reports this extension, and it is a raw passthrough extension in the way [ext.screen](screen) and
 [ext.chip](chip) are: the operating system carries it as it is and does not re-model it.
 
-`ext.internet` has nothing to do with the internet layer of [NEATO Network](../network/README), which is
+`ext.internet` has nothing to do with the internet layer of [NEATO Network](../network/), which is
 `ext.rpp`. The protocols of NEATO Network run between NEET computers, inside the game's world; `internet`
 reaches whatever real-world network the machine running the game is attached to. The two share a subject and
 nothing else.

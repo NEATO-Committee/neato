@@ -94,7 +94,7 @@ display is such a layer, one bit deep.
 Granting the display to one program at a time is a special case of the same rules. An operating system that does this
 reports `ext.headsup` only to the program that owns the display; to every other program the extension must not appear
 to be half there, with no `headsup` global and `sys.hasExtension("ext.headsup")` returning `false`, as the
-[main README](../README) requires.
+[main ](../) requires.
 
 ---
 
